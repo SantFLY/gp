@@ -1,144 +1,318 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>SGPE - Panel administrativo</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Inventario - SGPE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'bounce-in': 'bounceIn 0.6s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-100 text-gray-800 antialiased">
-  <div class="min-h-screen flex">
-    <!-- Sidebar -->
-    <aside class="w-72 bg-white shadow-md">
-      <div class="p-6 border-b">
-        <h2 class="text-xl font-semibold text-indigo-700">SGPE</h2>
-        <p class="text-sm text-gray-500">Panel de administración</p>
-      </div>
-      <nav class="p-4 space-y-1">
-        <button data-show="estudiantes" class="w-full text-left px-4 py-2 rounded hover:bg-indigo-50 sidebar-btn">Estudiantes</button>
-        <button data-show="docentes" class="w-full text-left px-4 py-2 rounded hover:bg-indigo-50 sidebar-btn">Docentes</button>
-        <button data-show="proyectos" class="w-full text-left px-4 py-2 rounded hover:bg-indigo-50 sidebar-btn">Proyectos</button>
-        <button data-show="actividades" class="w-full text-left px-4 py-2 rounded hover:bg-indigo-50 sidebar-btn">Actividades</button>
-        <button data-show="entregables" class="w-full text-left px-4 py-2 rounded hover:bg-indigo-50 sidebar-btn">Entregables</button>
-        <button data-show="upload" class="w-full text-left px-4 py-2 rounded hover:bg-indigo-50 sidebar-btn text-indigo-600">Subir archivo</button>
-      </nav>
-      <div class="p-4 border-t text-sm text-gray-500">
-        Usuario: Profesor<br/>Modo: DEMO
-      </div>
-    </aside>
-
-    <!-- Main content -->
-    <div class="flex-1 p-8">
-      <div id="toast-container" class="fixed top-6 right-6 space-y-2 z-50"></div>
-
-      <header class="flex items-center justify-between mb-6">
-        <div>
-          <h1 class="text-2xl font-semibold">Sistema de Gestión de Proyectos Estudiantiles</h1>
-          <p class="text-sm text-gray-500">Validaciones cliente y modales (JS puro)</p>
-        </div>
-        <div>
-          <button id="btn-refresh" class="px-4 py-2 bg-indigo-600 text-white rounded shadow">Refrescar datos</button>
-        </div>
-      </header>
-
-      <main class="bg-white rounded-lg shadow p-6">
-        <!-- Sections -->
-        <section id="estudiantes" class="section">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-medium">Estudiantes</h2>
-            <div>
-              <button id="est_btnNew" class="px-3 py-2 bg-green-600 text-white rounded">Nuevo estudiante</button>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <!-- Header -->
+    <header class="header-gradient shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white/20 p-3 rounded-xl">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold text-white">SGPE</h1>
+                        <p class="text-primary-100 text-sm">Sistema de Gestión de Inventario</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="btn-refresh" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        <span>Actualizar</span>
+                    </button>
+                </div>
             </div>
-          </div>
-          <div class="overflow-x-auto">
-            <table id="tablaEstudiantes" class="min-w-full text-sm divide-y">
-              <thead class="bg-gray-50"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-left">Nombre</th><th class="p-2 text-left">Correo</th><th class="p-2 text-left">Programa</th><th class="p-2 text-left">Acciones</th></tr></thead>
-              <tbody class="divide-y bg-white"></tbody>
-            </table>
-          </div>
-        </section>
+        </div>
+    </header>
 
-        <section id="docentes" class="section hidden">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-medium">Docentes</h2>
-            <button id="doc_btnNew" class="px-3 py-2 bg-green-600 text-white rounded">Nuevo docente</button>
-          </div>
-          <div class="overflow-x-auto">
-            <table id="tablaDocentes" class="min-w-full text-sm divide-y">
-              <thead class="bg-gray-50"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-left">Nombre</th><th class="p-2 text-left">Correo</th><th class="p-2 text-left">Área</th><th class="p-2 text-left">Acciones</th></tr></thead>
-              <tbody class="divide-y bg-white"></tbody>
-            </table>
-          </div>
-        </section>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1">
+                <div class="sidebar-card">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                        <svg class="w-6 h-6 text-primary-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                        </svg>
+                        Panel de Control
+                    </h2>
+                    <nav class="space-y-2">
+                        <button class="sidebar-btn" data-section="clientes">
+                            <svg class="w-5 h-5 text-gray-500 group-hover:text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            <span>Clientes</span>
+                        </button>
+                        <button class="sidebar-btn" data-section="productos">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                            </svg>
+                            <span>Productos</span>
+                        </button>
+                        <button class="sidebar-btn" data-section="proveedores">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                            <span>Proveedores</span>
+                        </button>
+                        <button class="sidebar-btn" data-section="pedidos">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            <span>Pedidos</span>
+                        </button>
+                        <button class="sidebar-btn" data-section="historial">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Historial</span>
+                        </button>
+                    </nav>
+                </div>
+            </aside>
 
-        <section id="proyectos" class="section hidden">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-medium">Proyectos</h2>
-            <button id="proy_btnNew" class="px-3 py-2 bg-green-600 text-white rounded">Nuevo proyecto</button>
-          </div>
-          <div class="overflow-x-auto">
-            <table id="tablaProyectos" class="min-w-full text-sm divide-y">
-              <thead class="bg-gray-50"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-left">Nombre</th><th class="p-2 text-left">Docente</th><th class="p-2 text-left">Inicio</th><th class="p-2 text-left">Fin</th><th class="p-2 text-left">Acciones</th></tr></thead>
-              <tbody class="divide-y bg-white"></tbody>
-            </table>
-          </div>
-        </section>
+            <!-- Main Content -->
+            <main class="lg:col-span-3">
+                <!-- Toast Container -->
+                <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
-        <section id="actividades" class="section hidden">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-medium">Actividades</h2>
-            <button id="act_btnNew" class="px-3 py-2 bg-green-600 text-white rounded">Nueva actividad</button>
-          </div>
-          <div class="overflow-x-auto">
-            <table id="tablaActividades" class="min-w-full text-sm divide-y">
-              <thead class="bg-gray-50"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-left">Nombre</th><th class="p-2 text-left">Proyecto</th><th class="p-2 text-left">Entrega</th><th class="p-2 text-left">Acciones</th></tr></thead>
-              <tbody class="divide-y bg-white"></tbody>
-            </table>
-          </div>
-        </section>
+                <!-- Modal Root -->
+                <div id="modal-root"></div>
 
-        <section id="entregables" class="section hidden">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-medium">Entregables</h2>
-            <button id="ent_btnNew" class="px-3 py-2 bg-green-600 text-white rounded">Nuevo entregable</button>
-          </div>
-          <div class="overflow-x-auto">
-            <table id="tablaEntregables" class="min-w-full text-sm divide-y">
-              <thead class="bg-gray-50"><tr><th class="p-2 text-left">ID</th><th class="p-2 text-left">Estudiante</th><th class="p-2 text-left">Actividad</th><th class="p-2 text-left">Estado</th><th class="p-2 text-left">Fecha subida</th><th class="p-2 text-left">Acciones</th></tr></thead>
-              <tbody class="divide-y bg-white"></tbody>
-            </table>
-          </div>
-        </section>
+                <!-- Confirm Modal -->
+                <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+                        <div class="text-center">
+                            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                                <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Confirmar Acción</h3>
+                            <p id="confirm-msg" class="text-sm text-gray-500 mb-6">¿Estás seguro de que quieres realizar esta acción?</p>
+                            <div class="flex space-x-3">
+                                <button id="confirm-cancel" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-lg transition-colors duration-200">Cancelar</button>
+                                <button id="confirm-ok" class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">Confirmar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <section id="upload" class="section hidden">
-          <div class="flex items-center gap-3">
-            <form id="formUpload" class="flex items-center gap-3">
-              <input type="file" name="file" id="fileInput" class="p-2 border rounded" />
-              <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Subir</button>
-            </form>
-            <div id="uploadResult" class="text-sm text-green-700"></div>
-          </div>
-        </section>
-      </main>
+                <!-- CLIENTES SECTION -->
+                <section id="clientes" class="section">
+                    <div class="main-card animate-fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Gestión de Clientes</h2>
+                                <p class="text-gray-600">Administra la información de tus clientes</p>
+                            </div>
+                            <button id="cliente_btnNew" class="mt-4 sm:mt-0 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span>Nuevo Cliente</span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table id="tablaClientes" class="data-table">
+                                <thead>
+                                    <tr class="bg-gray-50">
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dirección</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PRODUCTOS SECTION -->
+                <section id="productos" class="section hidden">
+                    <div class="main-card animate-fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Gestión de Productos</h2>
+                                <p class="text-gray-600">Administra tu inventario de productos</p>
+                            </div>
+                            <button id="producto_btnNew" class="mt-4 sm:mt-0 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span>Nuevo Producto</span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table id="tablaProductos" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proveedor</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PROVEEDORES SECTION -->
+                <section id="proveedores" class="section hidden">
+                    <div class="main-card animate-fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Gestión de Proveedores</h2>
+                                <p class="text-gray-600">Administra tus proveedores</p>
+                            </div>
+                            <button id="proveedor_btnNew" class="mt-4 sm:mt-0 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span>Nuevo Proveedor</span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table id="tablaProveedores" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Teléfono</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- PEDIDOS SECTION -->
+                <section id="pedidos" class="section hidden">
+                    <div class="main-card animate-fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Gestión de Pedidos</h2>
+                                <p class="text-gray-600">Administra los pedidos de tus clientes</p>
+                            </div>
+                            <button id="pedido_btnNew" class="mt-4 sm:mt-0 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                <span>Nuevo Pedido</span>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table id="tablaPedidos" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- HISTORIAL SECTION -->
+                <section id="historial" class="section hidden">
+                    <div class="main-card animate-fade-in">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
+                            <div>
+                                <h2 class="text-3xl font-bold text-gray-800 mb-2">Historial de Entregas</h2>
+                                <p class="text-gray-600">Consulta el historial de entregas por cliente</p>
+                            </div>
+                            <div class="mt-4 sm:mt-0 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+                                <input id="idClienteHistorial" type="number" placeholder="ID del cliente..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent" />
+                                <button id="btnConsultarHistorial" class="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 flex items-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                    <span>Consultar</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table id="tablaHistorial" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Entrega</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Pedido</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha Entrega</th>
+                                        <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
     </div>
-  </div>
 
-  <!-- Modal template (reusable) -->
-  <div id="modal-root"></div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-gray-300">© 2025 Sistema de Gestión de Inventario SGPE. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 
-  <!-- Confirm delete modal -->
-  <div id="confirm-modal" class="fixed inset-0 hidden items-center justify-center z-40">
-    <div class="absolute inset-0 bg-black opacity-40"></div>
-    <div class="bg-white rounded-lg shadow-lg p-6 z-50 w-96">
-      <h3 class="text-lg font-semibold mb-2">Confirmar acción</h3>
-      <p id="confirm-msg" class="text-sm text-gray-600 mb-4">¿Desea eliminar este registro?</p>
-      <div class="flex justify-end gap-3">
-        <button id="confirm-cancel" class="px-3 py-2 rounded bg-gray-100">Cancelar</button>
-        <button id="confirm-ok" class="px-3 py-2 rounded bg-red-600 text-white">Eliminar</button>
-      </div>
-    </div>
-  </div>
-
-  <script src="app_v4.js"></script>
+    <!-- Scripts -->
+    <script src="app.js"></script>
+    <script src="app_v2.js"></script>
+    <script src="app_v4.js"></script>
 </body>
 </html>

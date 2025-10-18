@@ -3,11 +3,12 @@
   <persistence-unit name="sgpePU" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/sgpeDS</jta-data-source>
-    <class>edu.compensar.sgpe.model.Actividad</class>
-    <class>edu.compensar.sgpe.model.Docente</class>
-    <class>edu.compensar.sgpe.model.Entregable</class>
-    <class>edu.compensar.sgpe.model.Estudiante</class>
-    <class>edu.compensar.sgpe.model.Proyecto</class>
+    <class>edu.compensar.sgpe.model.Productos</class>
+    <class>edu.compensar.sgpe.model.Proovedores</class>
+    <class>edu.compensar.sgpe.model.Clientes</class>
+    <class>edu.compensar.sgpe.model.Pedidos</class>
+    <class>edu.compensar.sgpe.model.Detalle_Pedidos</class>
+    <class>edu.compensar.sgpe.model.Historial_Pedidos</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
